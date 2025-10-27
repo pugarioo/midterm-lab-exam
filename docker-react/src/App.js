@@ -15,7 +15,7 @@ function App() {
 
   // FETCH ALL TASKS (GET)
   useEffect(() => {
-    fetch('http://localhost:5000/tasks') // adjust port if backend uses different one
+    fetch('http://localhost:8082/api/tasks') // adjust port if backend uses different one
       .then(res => res.json())
       .then(data => setTasks(data))
       .catch(err => console.error('Error fetching tasks:', err));
@@ -23,7 +23,7 @@ function App() {
 
   // ADD TASK (POST)
   const addTask = (taskDetails) => {
-    fetch('http://localhost:5000/tasks', {
+    fetch('http://localhost:8082/api/tasks', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify(taskDetails),
@@ -35,14 +35,14 @@ function App() {
 
   // DELETE TASK (DELETE)
   const deleteTask = (taskId) => {
-    fetch(`http://localhost:5000/tasks/${taskId}`, { method: 'DELETE' })
+    fetch(`http://localhost:8082/tasks/${taskId}`, { method: 'DELETE' })
       .then(() => setTasks(tasks.filter(task => task.id !== taskId)))
       .catch(err => console.error('Error deleting task:', err));
   };
 
   // UPDATE TASK (PUT)
   const updateTask = (taskId, updatedDetails) => {
-    fetch(`http://localhost:5000/tasks/${taskId}`, {
+    fetch(`http://localhost:8082/tasks/${taskId}`, {
       method: 'PUT',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify(updatedDetails),

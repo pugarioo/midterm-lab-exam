@@ -1,7 +1,6 @@
 import React, { useEffect, useState } from "react";
 import "bootstrap/dist/css/bootstrap.min.css";
 import Image from "react-bootstrap/Image";
-import taskImage from "../assets/add-task.png";
 import Alert from "react-bootstrap/Alert";
 
 function AddTaskView({ addFunction }) {
@@ -16,11 +15,12 @@ function AddTaskView({ addFunction }) {
     e.preventDefault();
 
     const newTask = {
-      id: taskId ? taskId : Date.now(),
       title,
       description,
       priority,
     };
+
+    addFunction(newTask)
 
     //  kung may taskId, UPDATE; kung wala, ADD
     if (isUpdate) {
@@ -61,7 +61,7 @@ function AddTaskView({ addFunction }) {
     <div className="container mt-5 h-100 d-flex justify-content-center align-items-center">
       <div className="card p-4 shadow-lg w-50">
         <div className="text-center mb-4">
-          <Image src={taskImage} width="80" alt="Add Task" />
+          {/* <Image src={taskImage} width="80" alt="Add Task" /> */}
           <h4 className="mt-2">{isUpdate ? "Update Task" : "Add New Task"}</h4>
         </div>
 
