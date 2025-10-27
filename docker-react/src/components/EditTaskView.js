@@ -1,83 +1,93 @@
-import React, { use, useEffect, useState } from 'react';
-import { BrowserRouter as Router, Routes, Route, Link } from 'react-router-dom';
-import Container from 'react-bootstrap/Container';
-import './App.css';
-import 'bootstrap/dist/css/bootstrap.min.css';
-import Navbar from 'react-bootstrap/Navbar';
-import Nav from 'react-bootstrap/Nav';
-import logo from './assets/logo.png';
-import TaskListView from './components/TaskListView';
-import AddTaskView from './components/AddTaskView';
-import EditTaskView from './components/EditTaskView'; 
+import React, { useState, useEffect } from 'react';
+import { useNavigate, useParams } from 'react-router-dom';
+import { Form, Button, Container } from 'react-bootstrap';
 
-function App() {
-  const [tasks, setTasks] = useState([
-    { id: 1, title: "Need to complete laboratory 2", description: "Finish Task 5 today", priority: "High" },
-    { id: 2, title: "Push branch", description: "Check pull requests", priority: "Medium" },
-    { id: 3, title: "House chores", description: "Clean the house", priority: "Low" },
-    { id: 4, title: "Update personal website", description: "Add new portfolio project and fix broken links.", priority: "High" },
-    { id: 5, title: "Grocery Shopping", description: "Buy vegetables, chicken, and bread.", priority: "Low" },
-  ]);
+function EditTaskView({ tasks, updateTask }) {
+  const { id } = useParams(); // Get task ID from URL
+  const navigate = useNavigate();
+  const taskToEdit = tasks.find(task => task.id === parseInt(id));
 
-// ✅ Function to update task details
-  const updateTask = (id, updatedData) => {
-    setTasks(tasks.map(task => 
-      task.id === id ? { ...task, ...updatedData } : task
-    ));
-  };
-
-  const addTask = (taskDetails) => {
-    const newTask = {
-      id: tasks.length + 1,
-      ...taskDetails,
-    };
-    setTasks([...tasks, newTask]);
-  };
-
-  const deleteTask = (taskId) => {
-    setTasks(tasks.map(task => 
-      task.id === taskId ? { ...task, deleting: true } : task
-    ));
-  };
+  const [formData, setFormData] = useState({
+    title: '',
+    description: '',
+    priority: 'Low',
+  });
 
   useEffect(() => {
-    const timer = setTimeout(() => {
-      setTasks(prevTasks => prevTasks.filter(task => !task.deleting));
-    }, 500); // Animation duration
+    if (taskToEdit) {
+      setFormData({
+        title: taskToEdit.title,
+        description: taskToEdit.description,
+        priority: taskToEdit.priority,
+      });
+    }
+  }, [taskToEdit]);
 
-    return () => clearTimeout(timer);
-  }, [tasks]);
+  const handleChange = (e) => {
+    setFormData({ ...formData, [e.target.name]: e.target.value });
+  };
+
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    updateTask(parseInt(id), formData);
+    navigate('/'); // Redirect back to home
+  };
+
+  if (!taskToEdit) {
+    return <h2 className="text-center mt-5">Task not found!</h2>;
+  }
 
   return (
-    <Router>
-      <div className="App">
-        <Navbar bg="dark" data-bs-theme="dark" expand="lg" fixed="top" className="rounded-0 custom-navbar">
-          <Container className="d-flex justify-content-around align-items-center">
-            <Navbar.Brand>
-              <i class="fa-solid fa-bars-progress me-2"></i>
-                TaskFlow
-            </Navbar.Brand>
-            <Navbar.Toggle aria-controls="basic-navbar-nav" />
-            <Navbar.Collapse id="basic-navbar-nav">
-              <Nav className="ms-auto">
-                <Nav.Link as={Link} to="/">Home</Nav.Link>
-                <Nav.Link as={Link} to="/add_task">Add Task</Nav.Link>
-              </Nav>
-            </Navbar.Collapse>
-          </Container>
-        </Navbar>
+    <Container className="mt-5 pt-5" style={{ maxWidth: '600px' }}>
+      <h2 className="mb-4 text-center">Edit Task</h2>
+      <Form onSubmit={handleSubmit}>
+        <Form.Group className="mb-3">
+          <Form.Label>Title</Form.Label>
+          <Form.Control
+            type="text"
+            name="title"
+            value={formData.title}
+            onChange={handleChange}
+            required
+          />
+        </Form.Group>
 
-        <main className="main-content">
-          <Routes>
-            {/* Home page: display list of tasks */}
-            <Route path="/" element={<TaskListView tasks={tasks} deleteTask={deleteTask} />} />
-            {/* Add task page: use addTask function */}
-            <Route path="/add_task" element={<AddTaskView addFunction = {addTask}/>} />
-          </Routes>
-        </main>
-      </div>
-    </Router>
+        <Form.Group className="mb-3">
+          <Form.Label>Description</Form.Label>
+          <Form.Control
+            as="textarea"
+            name="description"
+            rows={3}
+            value={formData.description}
+            onChange={handleChange}
+            required
+          />
+        </Form.Group>
+
+        <Form.Group className="mb-4">
+          <Form.Label>Priority</Form.Label>
+          <Form.Select
+            name="priority"
+            value={formData.priority}
+            onChange={handleChange}
+          >
+            <option>Low</option>
+            <option>Medium</option>
+            <option>High</option>
+          </Form.Select>
+        </Form.Group>
+
+        <div className="text-center">
+          <Button variant="primary" type="submit">
+            Save Changes
+          </Button>{' '}
+          <Button variant="secondary" onClick={() => navigate('/')}>
+            Cancel
+          </Button>
+        </div>
+      </Form>
+    </Container>
   );
 }
 
-export default App;
+export default EditTaskView;
