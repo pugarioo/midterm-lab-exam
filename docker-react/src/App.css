@@ -216,3 +216,18 @@ h2 {
 form {
   min-height: 75%;
 }
+
+/* Custom black navbar */
+.custom-navbar {
+  background-color: #000000 !important; /* solid black */
+}
+
+.custom-navbar .navbar-brand,
+.custom-navbar .nav-link {
+  color: #ffffff !important; /* white text */
+  font-weight: 500;
+}
+
+.custom-navbar .nav-link:hover {
+  color: #61dafb !important; /* light blue hover color */
+}
