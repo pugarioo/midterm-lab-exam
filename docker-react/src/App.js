@@ -8,6 +8,7 @@ import Nav from 'react-bootstrap/Nav';
 import logo from './assets/logo.png';
 import TaskListView from './components/TaskListView';
 import AddTaskView from './components/AddTaskView';
+import EditTaskView from './components/EditTaskView'; 
 
 function App() {
   const [tasks, setTasks] = useState([]);
@@ -56,7 +57,7 @@ function App() {
   return (
     <Router>
       <div className="App">
-        <Navbar bg="primary" data-bs-theme="dark" expand="lg" fixed="top" className="rounded-0">
+        <Navbar bg="dark" data-bs-theme="dark" expand="lg" fixed="top" className="rounded-0 custom-navbar">
           <Container className="d-flex justify-content-around align-items-center">
             <Navbar.Brand>
               <i className="fa-solid fa-bars-progress me-2"></i>
